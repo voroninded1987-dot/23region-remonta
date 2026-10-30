@@ -189,24 +189,24 @@ def apply_branding(text: str) -> str:
     header_elem = (
         "<div class='t396__elem tn-elem tn-elem__6724442791701100000001' "
         "data-elem-id='1701100000001' data-elem-type='html' "
-        "data-field-top-value=\"92\" data-field-left-value=\"87\" "
-        "data-field-height-value=\"40\" data-field-width-value=\"400\" "
+        "data-field-top-value=\"8\" data-field-left-value=\"720\" "
+        "data-field-height-value=\"36\" data-field-width-value=\"270\" "
         "data-field-axisy-value=\"top\" data-field-axisx-value=\"left\" "
         "data-field-container-value=\"grid\" "
         "data-field-topunits-value=\"px\" data-field-leftunits-value=\"px\" "
         "data-field-heightunits-value=\"px\" data-field-widthunits-value=\"px\" "
-        "data-field-top-res-320-value=\"120\" data-field-left-res-320-value=\"49\" "
-        "data-field-width-res-320-value=\"300\" "
-        "data-field-top-res-480-value=\"82\" data-field-left-res-480-value=\"60\" "
-        "data-field-top-res-640-value=\"80\" data-field-left-res-640-value=\"62\"> "
+        "data-field-top-res-320-value=\"-500\" data-field-left-res-320-value=\"49\" "
+        "data-field-top-res-480-value=\"-500\" data-field-left-res-480-value=\"60\" "
+        "data-field-top-res-640-value=\"8\" data-field-left-res-640-value=\"720\" "
+        "data-field-top-res-960-value=\"8\" data-field-left-res-960-value=\"700\"> "
         "<div class='tn-atom'> "
         "<a href=\"https://voroninded1987-dot.github.io/exponent-digital/\" "
         "target=\"_blank\" rel=\"noopener\" "
         "title=\"Exponent Digital — разработка сайта и маркетинг\" "
         "style=\"display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:inherit;\"> "
         "<img src='assets/exponent-logo.png' alt='Exponent Digital' "
-        "style='display:block;height:34px;width:auto;border-radius:6px;'/> "
-        "<span style=\"font-family:'Gilroy',Arial,sans-serif;font-size:13px;line-height:1.25;color:#0d0d0d;\">"
+        "style='display:block;height:30px;width:auto;border-radius:6px;'/> "
+        "<span style=\"font-family:'Gilroy',Arial,sans-serif;font-size:12px;line-height:1.25;color:#0d0d0d;\">"
         "разработка сайта<br>и маркетинг</span> </a> </div> </div>"
     )
     marker = (
@@ -236,7 +236,47 @@ def apply_branding(text: str) -> str:
     )
     assert old_credit in text, "footer LEADA credit not found"
     text = text.replace(old_credit, new_credit, 1)
+    # Remove the company phone numbers completely (header, menu bar, contacts).
+    for class_token in (
+        "6724442791687463834967",  # hero: phone number text
+        "6724442791687463835009",  # hero: phone icon
+        "6724443001594882485684",  # contacts: phone number 603-19-99
+        "6724443001701099055439",  # contacts: phone number 603-89-99
+        "6724443011635760131487",  # menu bar: phone number button
+        "6724443011701099142877",  # menu bar: phone number button
+    ):
+        text = _remove_t396_element(text, class_token)
     return text
+
+
+def _remove_t396_element(text: str, class_token: str) -> str:
+    """Remove one Tilda zero-block element by its tn-elem__ class token."""
+    marker = f"tn-elem__{class_token}'"
+    idx = text.find(marker)
+    if idx == -1:
+        return text
+    start = text.rfind("<div", 0, idx)
+    if start == -1:
+        return text
+    tag_end = text.find(">", idx)
+    if tag_end == -1:
+        return text
+    depth = 1
+    pos = tag_end + 1
+    while depth > 0:
+        nxt_open = re.search(r"<\s*div\b", text[pos:])
+        nxt_close = re.search(r"</\s*div\s*>", text[pos:])
+        if nxt_open is None and nxt_close is None:
+            break
+        open_pos = pos + nxt_open.start() if nxt_open else len(text)
+        close_pos = pos + nxt_close.start() if nxt_close else len(text)
+        if close_pos < open_pos:
+            depth -= 1
+            pos = close_pos + len(nxt_close.group(0))
+        else:
+            depth += 1
+            pos = open_pos + len(nxt_open.group(0))
+    return text[:start] + text[pos:]
 
 
 def main() -> int:
