@@ -184,7 +184,7 @@ def apply_branding(text: str) -> str:
     update canonical URLs to the GitHub Pages address."""
     text = text.replace(
         "https://xn----8sbhhcq4afdfepg6a.xn--p1ai",
-        "https://voroninded1987-dot.github.io/23region-remonta/",
+        "https://23region-remonta.github.io/",
     )
     header_elem = (
         "<div class='t396__elem tn-elem tn-elem__6724442791701100000001' "
