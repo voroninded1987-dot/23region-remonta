@@ -103,3 +103,11 @@
         opacity: 0;
     }
 }
+
+/* Exponent Digital header badge (mobile) */
+@media screen and (max-width: 959px) {
+  .tn-elem__6724442791701100000001 { width: 110px !important; }
+  .tn-elem__6724442791701100000001 a { flex-direction: column !important; gap: 2px !important; align-items: flex-start; }
+  .tn-elem__6724442791701100000001 a img { height: 16px !important; }
+  .tn-elem__6724442791701100000001 a span { font-size: 7px !important; line-height: 1.1 !important; }
+}

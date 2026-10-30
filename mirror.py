@@ -195,10 +195,14 @@ def apply_branding(text: str) -> str:
         "data-field-container-value=\"grid\" "
         "data-field-topunits-value=\"px\" data-field-leftunits-value=\"px\" "
         "data-field-heightunits-value=\"px\" data-field-widthunits-value=\"px\" "
-        "data-field-top-res-320-value=\"-500\" data-field-left-res-320-value=\"49\" "
-        "data-field-top-res-480-value=\"-500\" data-field-left-res-480-value=\"60\" "
-        "data-field-top-res-640-value=\"8\" data-field-left-res-640-value=\"720\" "
-        "data-field-top-res-960-value=\"8\" data-field-left-res-960-value=\"700\"> "
+        "data-field-top-res-320-value=\"0\" data-field-left-res-320-value=\"180\" "
+        "data-field-height-res-320-value=\"34\" data-field-width-res-320-value=\"110\" "
+        "data-field-top-res-480-value=\"0\" data-field-left-res-480-value=\"192\" "
+        "data-field-height-res-480-value=\"34\" data-field-width-res-480-value=\"110\" "
+        "data-field-top-res-640-value=\"96\" data-field-left-res-640-value=\"200\" "
+        "data-field-height-res-640-value=\"34\" data-field-width-res-640-value=\"110\" "
+        "data-field-top-res-960-value=\"8\" data-field-left-res-960-value=\"680\" "
+        "data-field-width-res-960-value=\"260\"> "
         "<div class='tn-atom'> "
         "<a href=\"https://voroninded1987-dot.github.io/exponent-digital/\" "
         "target=\"_blank\" rel=\"noopener\" "
@@ -313,6 +317,22 @@ def main() -> int:
         r = sess.get(custom_css_url, timeout=45)
         r.raise_for_status()
         custom_css_local.write_bytes(r.content)
+
+    # Compact mobile styling for the Exponent Digital badge in the header.
+    mobile_logo_css = (
+        "\n/* Exponent Digital header badge (mobile) */\n"
+        "@media screen and (max-width: 959px) {\n"
+        "  .tn-elem__6724442791701100000001 { width: 110px !important; }\n"
+        "  .tn-elem__6724442791701100000001 a { flex-direction: column !important; gap: 2px !important; align-items: flex-start; }\n"
+        "  .tn-elem__6724442791701100000001 a img { height: 16px !important; }\n"
+        "  .tn-elem__6724442791701100000001 a span { font-size: 7px !important; line-height: 1.1 !important; }\n"
+        "}\n"
+    )
+    css_text = custom_css_local.read_text(encoding="utf-8", errors="replace")
+    marker = "/* Exponent Digital header badge (mobile) */"
+    if marker in css_text:
+        css_text = css_text[: css_text.find(marker)].rstrip() + "\n"
+    custom_css_local.write_text(css_text + mobile_logo_css, encoding="utf-8")
 
     # Download resources referenced by downloaded stylesheets (fonts and icons).
     css_files: list[tuple[str, Path]] = []
