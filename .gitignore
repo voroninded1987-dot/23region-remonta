@@ -1,0 +1,8 @@
+# Исходник живого сайта (для справки, не нужен для работы копии)
+index-source.html
+# Скриншоты для проверки вёрстки
+/hdr-desktop.png
+/ftr-desktop.png
+/hdr-mobile.png
+/ftr-mobile.png
+.DS_Store
